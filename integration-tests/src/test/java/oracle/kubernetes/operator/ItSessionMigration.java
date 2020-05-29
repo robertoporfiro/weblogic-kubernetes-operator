@@ -205,6 +205,11 @@ public class ItSessionMigration extends BaseTest {
     String primaryServ = "primary";
     String count = "count";
 
+    // debug get server info
+    String getCmd = "kubectl get all -n " + domainNS;
+    LoggerHelper.getLocal().log(Level.INFO, "Command to get pod info: " + getCmd);
+    TestUtils.execOrAbortProcess(getCmd, true);
+
     // Send the first HTTP request and save HTTP header/sessionID info
     ExecResult result = getHttpResponse(webServiceSetUrl, " -D ");
 
@@ -252,7 +257,7 @@ public class ItSessionMigration extends BaseTest {
     String curlCmd = buildWebServiceUrl(webServiceUrl, headerOption + httpHeaderFile);
     LoggerHelper.getLocal().log(Level.INFO, "Send a HTTP request: " + curlCmd);
 
-    ExecResult result = TestUtils.execOrAbortProcess(curlCmd);
+    ExecResult result = TestUtils.execOrAbortProcess(curlCmd, true);
 
     return result;
   }
@@ -290,7 +295,7 @@ public class ItSessionMigration extends BaseTest {
     String nodePortHost = domain.getHostNameForCurl();
     int nodePort = domain.getLoadBalancerWebPort();
 
-    StringBuffer webServiceUrl = new StringBuffer("curl --silent ");
+    StringBuffer webServiceUrl = new StringBuffer("curl");
     webServiceUrl
         .append(" -H 'host: ")
         .append(domain.getDomainUid())
